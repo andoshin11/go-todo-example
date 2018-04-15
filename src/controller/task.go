@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// TasksGET displays application index page
+// TasksGET returns list of task
 func TasksGET(c *gin.Context) {
 	db := model.DBConnect()
 	result, err := db.Query("SELECT * FROM task ORDER BY id DESC")
@@ -39,4 +39,25 @@ func TasksGET(c *gin.Context) {
 	}
 	fmt.Println(tasks)
 	c.JSON(http.StatusOK, gin.H{"tasks": tasks})
+}
+
+// TaskPOST creates a new task
+func TaskPOST(c *gin.Context) {
+	db := model.DBConnect()
+
+	title := c.PostForm("title")
+	now := time.Now()
+
+	task := &model.Task{
+		Title:     title,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	err := task.Save(db)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fmt.Printf("post sent. title: %s", title)
 }
