@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/andoshin11/go-web-app/src/model"
@@ -60,4 +61,50 @@ func TaskPOST(c *gin.Context) {
 	}
 
 	fmt.Printf("post sent. title: %s", title)
+}
+
+// TaskPATCH updates a task
+func TaskPATCH(c *gin.Context) {
+	db := model.DBConnect()
+
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	task, err := model.TaskByID(db, uint(id))
+	if err != nil {
+		panic(err.Error())
+	}
+
+	title := c.PostForm("title")
+	now := time.Now()
+
+	task.Title = title
+	task.UpdatedAt = now
+
+	err = task.Update(db)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fmt.Println(task)
+	c.JSON(http.StatusOK, gin.H{"task": task})
+}
+
+// TaskDELETE deletes a task
+func TaskDELETE(c *gin.Context) {
+	db := model.DBConnect()
+
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	// Check if record exists
+	task, err := model.TaskByID(db, uint(id))
+	if err != nil {
+		panic(err.Error())
+	}
+
+	err = task.Delete(db)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	c.JSON(http.StatusOK, "deleted")
 }

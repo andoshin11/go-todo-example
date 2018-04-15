@@ -13,6 +13,8 @@ func main() {
 	{
 		v1.GET("/tasks", controller.TasksGET)
 		v1.POST("/tasks", controller.TaskPOST)
+		v1.PATCH("/tasks/:id", controller.TaskPATCH)
+		v1.DELETE("/tasks/:id", controller.TaskDELETE)
 	}
 
 	router.GET("/", controller.IndexGET)
