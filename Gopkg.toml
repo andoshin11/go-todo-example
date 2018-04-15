@@ -40,3 +40,7 @@
 [[constraint]]
   branch = "master"
   name = "bitbucket.org/liamstask/goose"
+
+[[constraint]]
+  name = "github.com/go-sql-driver/mysql"
+  version = "1.3.0"
