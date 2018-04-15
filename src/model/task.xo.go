@@ -38,21 +38,28 @@ func (t *Task) Insert(db XODB) error {
 		return errors.New("insert failed: already exists")
 	}
 
-	// sql insert query, primary key must be provided
+	// sql insert query, primary key provided by autoincrement
 	const sqlstr = `INSERT INTO gwa.task (` +
-		`id, created_at, updated_at, title` +
+		`created_at, updated_at, title` +
 		`) VALUES (` +
-		`?, ?, ?, ?` +
+		`?, ?, ?` +
 		`)`
 
 	// run query
-	XOLog(sqlstr, t.ID, t.CreatedAt, t.UpdatedAt, t.Title)
-	_, err = db.Exec(sqlstr, t.ID, t.CreatedAt, t.UpdatedAt, t.Title)
+	XOLog(sqlstr, t.CreatedAt, t.UpdatedAt, t.Title)
+	res, err := db.Exec(sqlstr, t.CreatedAt, t.UpdatedAt, t.Title)
 	if err != nil {
 		return err
 	}
 
-	// set existence
+	// retrieve id
+	id, err := res.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	// set primary key and existence
+	t.ID = uint(id)
 	t._exists = true
 
 	return nil
