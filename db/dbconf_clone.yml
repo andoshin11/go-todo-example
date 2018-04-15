@@ -1,0 +1,3 @@
+development:
+    driver: mymysql
+    open: tcp:<your host>:<your port>*<your db>/<your user>/
