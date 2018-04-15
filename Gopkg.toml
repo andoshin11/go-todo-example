@@ -32,3 +32,11 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "github.com/pressly/goose"
+  version = "2.1.0"
+
+[[constraint]]
+  branch = "master"
+  name = "bitbucket.org/liamstask/goose"
